@@ -1,0 +1,13 @@
+[workspace]
+members = ["crates/*"]
+resolver = "2"
+
+[workspace.package]
+authors = ["Travis Nesbit, MD (@geekmd)"]
+description = "An collection of leet code challenges solved in Rust."
+edition = "2024"
+license = "None"
+version = "0.1.0"
+
+[workspace.dependencies]
+
