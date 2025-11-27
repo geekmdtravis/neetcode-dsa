@@ -1,5 +1,5 @@
 [package]
-name = "contains-duplicate"
+name = "valid-anagram"
 authors.workspace = true
 description.workspace = true
 edition.workspace = true
@@ -7,4 +7,4 @@ license.workspace = true
 version.workspace = true
 
 [dependencies]
-test-case = { workspace = true }
+test-case.workspace = true
