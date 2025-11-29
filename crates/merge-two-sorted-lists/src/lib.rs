@@ -55,22 +55,24 @@ impl Solution {
         mut list1: Option<Box<ListNode>>,
         mut list2: Option<Box<ListNode>>,
     ) -> Option<Box<ListNode>> {
-        let mut dummy = Box::new(ListNode::new(0));
-        let mut tail = &mut dummy.next;
+        let mut init_node = Box::new(ListNode::new(0));
+        let mut cursor_new = &mut init_node;
 
-        while let (Some(l1), Some(l2)) = (&list1, &list2) {
-            if l1.val <= l2.val {
-                *tail = list1.take();
-                tail = &mut tail.as_mut().unwrap().next;
-                list1 = tail.take();
+        while let (Some(n1), Some(n2)) = (&list1, &list2) {
+            if n1.val < n2.val {
+                let mut node = list1.take().unwrap();
+                list1 = node.next.take();
+                cursor_new.next = Some(node);
             } else {
-                *tail = list2.take();
-                tail = &mut tail.as_mut().unwrap().next;
-                list2 = tail.take();
+                let mut node = list2.take().unwrap();
+                list2 = node.next.take();
+                cursor_new.next = Some(node);
             }
+            cursor_new = cursor_new.next.as_mut().unwrap();
         }
-        *tail = list1.or(list2);
-        dummy.next
+        cursor_new.next = list1.or(list2);
+
+        init_node.next
     }
 }
 
