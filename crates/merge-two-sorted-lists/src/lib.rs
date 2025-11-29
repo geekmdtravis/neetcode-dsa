@@ -13,6 +13,39 @@ impl ListNode {
     }
 }
 
+pub struct LikedList {
+    pub head: Option<Box<ListNode>>,
+}
+
+impl LikedList {
+    #[allow(dead_code)]
+    pub fn new() -> Self {
+        LikedList { head: None }
+    }
+
+    #[allow(dead_code)]
+    pub fn from_vec(vec: Vec<i32>) -> Self {
+        let mut list = LikedList::new();
+        for &val in vec.iter().rev() {
+            let mut node = Box::new(ListNode::new(val));
+            node.next = list.head.take();
+            list.head = Some(node);
+        }
+        list
+    }
+
+    #[allow(dead_code)]
+    pub fn to_vec(&self) -> Vec<i32> {
+        let mut vec = Vec::new();
+        let mut current = &self.head;
+        while let Some(node) = current {
+            vec.push(node.val);
+            current = &node.next;
+        }
+        vec
+    }
+}
+
 #[allow(dead_code)]
 struct Solution;
 
@@ -38,5 +71,19 @@ impl Solution {
         }
         *tail = list1.or(list2);
         dummy.next
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_merge_two_lists() {
+        let list1 = LikedList::from_vec(vec![1, 2, 4]);
+        let list2 = LikedList::from_vec(vec![1, 3, 4]);
+        let merged = Solution::merge_two_lists(list1.head, list2.head);
+        let merged_list = LikedList { head: merged };
+        assert_eq!(merged_list.to_vec(), vec![1, 1, 2, 3, 4, 4]);
     }
 }
