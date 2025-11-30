@@ -1,7 +1,9 @@
+type NodeLink = Option<Box<ListNode>>;
+
 #[derive(PartialEq, Eq, Clone, Debug)]
 struct ListNode {
     val: i32,
-    next: Option<Box<ListNode>>,
+    next: NodeLink,
 }
 
 impl ListNode {
@@ -11,8 +13,8 @@ impl ListNode {
 }
 
 struct MyLinkedList {
-    head: Option<Box<ListNode>>,
-    tail: Option<Box<ListNode>>,
+    head: NodeLink,
+    tail: NodeLink,
 }
 
 /**
@@ -28,19 +30,44 @@ impl MyLinkedList {
         }
     }
 
+    /// If the index is invalid, return -1.
     #[allow(dead_code)]
     fn get(&self, index: i32) -> i32 {
-        todo!("implement")
+        let mut curr = match self.head.as_ref() {
+            Some(n) => n,
+            None => {
+                return -1;
+            }
+        };
+
+        for _ in 0..index {
+            curr = match curr.next.as_ref() {
+                Some(n) => n,
+                None => {
+                    return -1;
+                }
+            };
+        }
+        curr.val
     }
 
     #[allow(dead_code)]
     fn add_at_head(&mut self, val: i32) {
-        todo!("implement")
+        let mut new_node = ListNode::new(val);
+        new_node.next = self.head.take();
+        self.head = Some(Box::new(new_node));
     }
 
     #[allow(dead_code)]
     fn add_at_tail(&mut self, val: i32) {
-        todo!("implement")
+        let new = Box::new(ListNode::new(val));
+        if let Some(tail) = self.tail.as_mut() {
+            tail.next = Some(new);
+            self.tail = new;
+        } else {
+            self.head = new;
+            self.tail = new;
+        }
     }
 
     #[allow(dead_code)]
