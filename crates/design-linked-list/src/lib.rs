@@ -173,7 +173,7 @@ impl MyLinkedList {
             };
             self.head = Some(next);
         } else {
-            let mut left = None;
+            let mut prev = None;
             for _ in 0..index {
                 let next = match &curr.borrow().next {
                     Some(ln) => Rc::clone(ln),
@@ -181,24 +181,23 @@ impl MyLinkedList {
                         return;
                     }
                 };
-                left = Some(curr);
+                prev = Some(curr);
                 curr = next;
             }
 
-            let right = match &curr.borrow().next {
-                Some(ln) => Rc::clone(ln),
-                None => {
-                    return;
-                }
-            };
+            if index == self.length - 1 {
+                self.tail = prev.clone();
+            }
+
+            let next = curr.borrow().next.clone();
 
             curr.borrow_mut().next = None;
-            if let Some(left) = left {
-                left.borrow_mut().next = Some(right);
+            if let Some(prev) = prev {
+                prev.borrow_mut().next = next;
             };
         }
 
-        self.length = self.length - 1;
+        self.length -= 1;
     }
 }
 
