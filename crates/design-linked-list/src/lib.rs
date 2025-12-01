@@ -95,11 +95,13 @@ impl MyLinkedList {
         self.length = self.length + 1;
     }
 
+    /// Add a node of value `val` before the __indexth__ node in the linked list.
+    /// If `index` equals the length of the linked list, the node will be
+    /// appended to the end of the linked list. If `index` is greater than
+    /// the length, the node will not be inserted.
     #[allow(dead_code)]
     fn add_at_index(&mut self, index: i32, val: i32) {
-        let last_index = self.length - 1;
-
-        if index > last_index {
+        if index > self.length {
             return;
         }
 
@@ -108,7 +110,7 @@ impl MyLinkedList {
             return;
         }
 
-        if index == last_index {
+        if index == self.length {
             self.add_at_tail(val);
             return;
         }
@@ -120,28 +122,29 @@ impl MyLinkedList {
             }
         };
 
-        for _ in 0..index + 1 {
+        let mut prev = None;
+        for _ in 0..index {
             let next = match &curr.borrow().next {
                 Some(ln) => Rc::clone(ln),
                 None => {
                     return;
                 }
             };
+            prev = Some(curr);
             curr = next;
         }
 
-        let right = match &curr.borrow().next {
+        let prev_node = match &prev {
             Some(ln) => Rc::clone(ln),
             None => {
                 return;
             }
         };
 
-        let mut new = ListNode::new(val);
-        new.next = Some(right);
+        let mut new_node = ListNode::new(val);
+        new_node.next = Some(curr);
+        prev_node.borrow_mut().next = Some(Rc::new(RefCell::new(new_node)));
 
-        let left = curr;
-        left.borrow_mut().next = Some(Rc::new(RefCell::new(new)));
         self.length = self.length + 1;
     }
 
@@ -253,28 +256,30 @@ mod tests {
     }
 
     #[test]
-    fn it_adds_at_index_last() {
+    fn it_adds_at_len_of_ll() {
         let mut linked_list = MyLinkedList::new();
+        linked_list.add_at_head(2);
         linked_list.add_at_head(1);
         linked_list.add_at_head(0);
-        linked_list.add_at_index(1, 2);
+        linked_list.add_at_index(3, 3);
 
         assert_eq!(linked_list.get(0), 0);
-        assert_eq!(linked_list.get(1), 2);
-        assert_eq!(linked_list.get(2), 1);
+        assert_eq!(linked_list.get(1), 1);
+        assert_eq!(linked_list.get(2), 2);
+        assert_eq!(linked_list.get(3), 3);
     }
 
     #[test]
-    fn it_adds_at_index_middle() {
+    fn it_adds_at_index_inside() {
         let mut linked_list = MyLinkedList::new();
-        linked_list.add_at_head(3);
         linked_list.add_at_head(2);
         linked_list.add_at_head(1);
-        linked_list.add_at_index(1, 4);
+        linked_list.add_at_head(0);
+        linked_list.add_at_index(2, 3);
 
-        assert_eq!(linked_list.get(0), 1);
-        assert_eq!(linked_list.get(1), 4);
-        assert_eq!(linked_list.get(2), 2);
-        assert_eq!(linked_list.get(3), 3);
+        assert_eq!(linked_list.get(0), 0);
+        assert_eq!(linked_list.get(1), 1);
+        assert_eq!(linked_list.get(2), 3);
+        assert_eq!(linked_list.get(3), 2);
     }
 }
