@@ -161,29 +161,43 @@ impl MyLinkedList {
             }
         };
 
-        let mut left = None;
-        for _ in 0..index {
+        if index == 0 {
             let next = match &curr.borrow().next {
+                Some(ln) => Rc::clone(ln),
+                None => {
+                    self.head = None;
+                    self.tail = None;
+                    self.length = self.length - 1;
+                    return;
+                }
+            };
+            self.head = Some(next);
+        } else {
+            let mut left = None;
+            for _ in 0..index {
+                let next = match &curr.borrow().next {
+                    Some(ln) => Rc::clone(ln),
+                    None => {
+                        return;
+                    }
+                };
+                left = Some(curr);
+                curr = next;
+            }
+
+            let right = match &curr.borrow().next {
                 Some(ln) => Rc::clone(ln),
                 None => {
                     return;
                 }
             };
-            left = Some(curr);
-            curr = next;
+
+            curr.borrow_mut().next = None;
+            if let Some(left) = left {
+                left.borrow_mut().next = Some(right);
+            };
         }
 
-        let right = match &curr.borrow().next {
-            Some(ln) => Rc::clone(ln),
-            None => {
-                return;
-            }
-        };
-
-        curr.borrow_mut().next = None;
-        if let Some(left) = left {
-            left.borrow_mut().next = Some(right);
-        };
         self.length = self.length - 1;
     }
 }
@@ -247,6 +261,36 @@ mod tests {
     }
 
     #[test]
+    fn it_deletes_at_index_0() {
+        let mut linked_list = MyLinkedList::new();
+        linked_list.add_at_head(1);
+        linked_list.add_at_head(2);
+        linked_list.add_at_head(3);
+
+        assert_eq!(linked_list.get(0), 3);
+        assert_eq!(linked_list.get(1), 2);
+        assert_eq!(linked_list.get(2), 1);
+
+        linked_list.delete_at_index(0);
+        assert_eq!(linked_list.get(0), 2);
+        assert_eq!(linked_list.get(1), 1);
+    }
+
+    #[test]
+    fn it_deletes_at_last_index() {
+        let mut linked_list = MyLinkedList::new();
+        linked_list.add_at_head(1);
+        linked_list.add_at_head(2);
+        linked_list.add_at_head(3);
+        assert_eq!(linked_list.get(0), 3);
+        assert_eq!(linked_list.get(1), 2);
+        assert_eq!(linked_list.get(2), 1);
+        linked_list.delete_at_index(2);
+        assert_eq!(linked_list.get(0), 3);
+        assert_eq!(linked_list.get(1), 2);
+    }
+
+    #[test]
     fn it_adds_at_index_0() {
         let mut linked_list = MyLinkedList::new();
         linked_list.add_at_head(1);
@@ -281,5 +325,16 @@ mod tests {
         assert_eq!(linked_list.get(1), 1);
         assert_eq!(linked_list.get(2), 3);
         assert_eq!(linked_list.get(3), 2);
+    }
+
+    #[test]
+    fn leetcode_test_case() {
+        let mut linked_list = MyLinkedList::new();
+        linked_list.add_at_head(1);
+        linked_list.add_at_tail(3);
+        linked_list.add_at_index(1, 2);
+        assert_eq!(linked_list.get(1), 2);
+        linked_list.delete_at_index(0);
+        assert_eq!(linked_list.get(0), 2);
     }
 }
