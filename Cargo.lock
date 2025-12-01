@@ -24,6 +24,10 @@ name = "design-linked-list"
 version = "0.1.0"
 
 [[package]]
+name = "implement-stack-using-queues"
+version = "0.1.0"
+
+[[package]]
 name = "merge-two-sorted-lists"
 version = "0.1.0"
 
