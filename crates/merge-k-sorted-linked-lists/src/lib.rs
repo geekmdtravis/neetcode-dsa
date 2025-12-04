@@ -24,21 +24,47 @@ impl ListNode {
             values.push(curr.val);
             curr = next.as_ref();
         }
+        values.push(curr.val);
         values
     }
 }
 
 impl Solution {
     #[allow(dead_code)]
-    pub fn merge_k_lists(mut lists: Vec<Option<Box<ListNode>>>) -> Option<Box<ListNode>> {
-        let taken = lists.get_mut(0).take().unwrap().take();
-        taken
+    pub fn merge_k_lists(lists: Vec<Option<Box<ListNode>>>) -> Option<Box<ListNode>> {
+        let mut dummy = Box::new(ListNode::new(0));
+        let mut outer_curr = dummy.as_mut();
+
+        for list_head in lists {
+            let mut inner_curr = list_head;
+
+            while let Some(mut node) = inner_curr {
+                inner_curr = node.next.take();
+                outer_curr.next = Some(node);
+                outer_curr = outer_curr.next.as_mut().unwrap();
+            }
+        }
+        dummy.next
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn values_returns() {
+        let mut node_a1 = ListNode::new(11);
+        let mut node_a2 = ListNode::new(20);
+        let node_a3 = ListNode::new(33);
+        node_a2.next = Some(Box::new(node_a3));
+        node_a1.next = Some(Box::new(node_a2));
+
+        let actual = node_a1.values();
+        let expected = vec![11, 20, 33];
+
+        assert_eq!(actual, expected);
+    }
 
     #[test]
     fn merges_and_sorts_three_lists() {
@@ -75,10 +101,13 @@ mod tests {
         println!("{:?}", list.clone());
 
         let head = Solution::merge_k_lists(list);
-        let actual_order = head.unwrap().values();
+        let actual_order = match head {
+            Some(h) => h.values(),
+            None => vec![],
+        };
         println!("{:?}", actual_order.clone());
 
-        let mut expected_order = vec![11, 20, 33, 0, 2, 10, 3, 42, 105, 1009];
+        let mut expected_order = vec![11, 20, 33, 0, 2, 10, 30, 3, 42, 105, 136, 1009];
         expected_order.sort();
         println!("{:?}", expected_order.clone());
 
