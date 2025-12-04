@@ -14,12 +14,25 @@ impl ListNode {
     fn new(val: i32) -> Self {
         ListNode { next: None, val }
     }
+
+    #[allow(dead_code)]
+    fn values(self) -> Vec<i32> {
+        let mut values = vec![];
+        let mut curr = &self;
+
+        while let Some(next) = &curr.next {
+            values.push(curr.val);
+            curr = next.as_ref();
+        }
+        values
+    }
 }
 
 impl Solution {
     #[allow(dead_code)]
-    pub fn merge_k_lists(lists: Vec<Option<Box<ListNode>>>) -> Option<Box<ListNode>> {
-        todo!()
+    pub fn merge_k_lists(mut lists: Vec<Option<Box<ListNode>>>) -> Option<Box<ListNode>> {
+        let taken = lists.get_mut(0).take().unwrap().take();
+        taken
     }
 }
 
@@ -28,7 +41,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn it_works() {
+    fn merges_and_sorts_three_lists() {
         let mut node_a1 = ListNode::new(11);
         let mut node_a2 = ListNode::new(20);
         let node_a3 = ListNode::new(33);
@@ -53,10 +66,23 @@ mod tests {
         node_c2.next = Some(Box::new(node_c3));
         node_c1.next = Some(Box::new(node_c2));
 
-        let list = vec![node_a1, node_b1, node_c1];
+        let list = vec![
+            Some(Box::new(node_a1)),
+            Some(Box::new(node_b1)),
+            Some(Box::new(node_c1)),
+        ];
 
-        println!("{:?}", list);
+        println!("{:?}", list.clone());
 
-        assert_eq!(1, 4);
+        let head = Solution::merge_k_lists(list);
+        let actual_order = head.unwrap().values();
+        println!("{:?}", actual_order.clone());
+
+        let mut expected_order = vec![11, 20, 33, 0, 2, 10, 3, 42, 105, 1009];
+        expected_order.sort();
+        println!("{:?}", expected_order.clone());
+
+        assert_eq!(actual_order.len(), expected_order.len());
+        assert_eq!(actual_order, expected_order);
     }
 }
