@@ -17,14 +17,14 @@ impl ListNode {
 
     #[allow(dead_code)]
     fn values(self) -> Vec<i32> {
-        let mut values = vec![];
-        let mut curr = &self;
+        let mut values = vec![self.val];
+        let mut cur = self.next;
 
-        while let Some(next) = &curr.next {
-            values.push(curr.val);
-            curr = next.as_ref();
+        while let Some(node) = cur {
+            values.push(node.val);
+            cur = node.next;
         }
-        values.push(curr.val);
+
         values
     }
 }
