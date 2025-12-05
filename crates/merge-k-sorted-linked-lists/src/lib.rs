@@ -32,19 +32,17 @@ impl ListNode {
 impl Solution {
     #[allow(dead_code)]
     pub fn merge_k_lists(lists: Vec<Option<Box<ListNode>>>) -> Option<Box<ListNode>> {
-        let mut dummy = Box::new(ListNode::new(0));
-        let mut outer_curr = dummy.as_mut();
+        let mut anchor = Box::new(ListNode::new(0));
+        let mut builder = anchor.as_mut();
 
-        for list_head in lists {
-            let mut inner_curr = list_head;
-
-            while let Some(mut node) = inner_curr {
-                inner_curr = node.next.take();
-                outer_curr.next = Some(node);
-                outer_curr = outer_curr.next.as_mut().unwrap();
+        for mut list_head in lists {
+            while let Some(mut node) = list_head {
+                list_head = node.next.take();
+                (*builder).next = Some(node);
+                builder = builder.next.as_mut().unwrap();
             }
         }
-        dummy.next
+        anchor.next
     }
 }
 
