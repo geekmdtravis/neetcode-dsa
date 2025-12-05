@@ -32,8 +32,25 @@ impl ListNode {
 impl Solution {
     #[allow(dead_code)]
     pub fn merge_k_lists(lists: Vec<Option<Box<ListNode>>>) -> Option<Box<ListNode>> {
-        let (head, _node_cnt) = Solution::concat_lists(lists);
-        head
+        let (mut head_node, node_cnt) = Solution::concat_lists(lists);
+        let head = head_node.as_mut().unwrap();
+
+        Solution::merge_sort(head, 0, node_cnt);
+
+        head_node
+    }
+
+    fn merge_sort(head: &mut Box<ListNode>, start: i32, end: i32) -> () {
+        if start >= end {
+            return;
+        }
+
+        let middle = (start + end) / 2;
+
+        // Left
+        Solution::merge_sort(head, start, middle);
+        // Right
+        Solution::merge_sort(head, middle + 1, end);
     }
 
     fn concat_lists(lists: Vec<Option<Box<ListNode>>>) -> (Option<Box<ListNode>>, i32) {
