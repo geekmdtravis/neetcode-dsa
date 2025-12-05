@@ -32,22 +32,24 @@ impl ListNode {
 impl Solution {
     #[allow(dead_code)]
     pub fn merge_k_lists(lists: Vec<Option<Box<ListNode>>>) -> Option<Box<ListNode>> {
-        let head = Solution::concat_lists(lists);
+        let (head, _node_cnt) = Solution::concat_lists(lists);
         head
     }
 
-    fn concat_lists(lists: Vec<Option<Box<ListNode>>>) -> Option<Box<ListNode>> {
+    fn concat_lists(lists: Vec<Option<Box<ListNode>>>) -> (Option<Box<ListNode>>, i32) {
         let mut anchor = Box::new(ListNode::new(0));
         let mut builder = &mut anchor;
+        let mut node_cnt = 0i32;
 
         for mut curr in lists {
             while let Some(mut node) = curr {
                 curr = node.next.take();
                 builder = builder.next.insert(node);
+                node_cnt += 1;
             }
         }
 
-        anchor.next
+        (anchor.next, node_cnt)
     }
 }
 
@@ -70,7 +72,7 @@ mod tests {
     }
 
     #[test]
-    fn merges_and_sorts_three_lists() {
+    fn concat_list() {
         let mut node_a1 = ListNode::new(11);
         let mut node_a2 = ListNode::new(20);
         let node_a3 = ListNode::new(33);
@@ -103,18 +105,15 @@ mod tests {
 
         println!("{:?}", list.clone());
 
-        let head = Solution::merge_k_lists(list);
+        let (head, cnt) = Solution::concat_lists(list);
         let actual_order = match head {
             Some(h) => h.values(),
             None => vec![],
         };
-        println!("{:?}", actual_order.clone());
 
-        let mut expected_order = vec![11, 20, 33, 0, 2, 10, 30, 3, 42, 105, 136, 1009];
-        expected_order.sort();
-        println!("{:?}", expected_order.clone());
+        let expected_order = vec![11, 20, 33, 0, 2, 10, 30, 3, 42, 105, 136, 1009];
 
-        assert_eq!(actual_order.len(), expected_order.len());
+        assert_eq!(cnt, expected_order.len() as i32);
         assert_eq!(actual_order, expected_order);
     }
 }
