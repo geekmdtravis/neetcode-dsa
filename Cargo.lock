@@ -90,6 +90,13 @@ name = "sandbox"
 version = "0.1.0"
 
 [[package]]
+name = "search-2x2-matrix"
+version = "0.1.0"
+dependencies = [
+ "test-case",
+]
+
+[[package]]
 name = "sort-colors"
 version = "0.1.0"
 dependencies = [
