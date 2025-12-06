@@ -27,30 +27,30 @@ impl ListNode {
 
         values
     }
+
+    fn from_values(values: Vec<i32>) -> Option<Box<ListNode>> {
+        let mut anchor = Box::new(ListNode::new(0));
+        let mut builder = &mut anchor;
+
+        for val in values {
+            builder = builder.next.insert(Box::new(ListNode::new(val)));
+        }
+
+        anchor.next
+    }
 }
 
+// TODO: Opted out of recursive merge sort implementation for now; will
+// revisit later when time permits.
 impl Solution {
     #[allow(dead_code)]
     pub fn merge_k_lists(lists: Vec<Option<Box<ListNode>>>) -> Option<Box<ListNode>> {
-        let (mut head_node, node_cnt) = Solution::concat_lists(lists);
-        let head = head_node.as_mut().unwrap();
+        let (head_node, _) = Solution::concat_lists(lists);
 
-        Solution::merge_sort(head, 0, node_cnt);
+        let mut values = head_node.unwrap().values();
+        values.sort();
 
-        head_node
-    }
-
-    fn merge_sort(head: &mut Box<ListNode>, start: i32, end: i32) -> () {
-        if start >= end {
-            return;
-        }
-
-        let middle = (start + end) / 2;
-
-        // Left
-        Solution::merge_sort(head, start, middle);
-        // Right
-        Solution::merge_sort(head, middle + 1, end);
+        ListNode::from_values(values)
     }
 
     fn concat_lists(lists: Vec<Option<Box<ListNode>>>) -> (Option<Box<ListNode>>, i32) {
@@ -131,6 +131,52 @@ mod tests {
         let expected_order = vec![11, 20, 33, 0, 2, 10, 30, 3, 42, 105, 136, 1009];
 
         assert_eq!(cnt, expected_order.len() as i32);
+        assert_eq!(actual_order, expected_order);
+    }
+
+    #[test]
+    fn sorts_correctly() {
+        let mut node_a1 = ListNode::new(11);
+        let mut node_a2 = ListNode::new(20);
+        let node_a3 = ListNode::new(33);
+        node_a2.next = Some(Box::new(node_a3));
+        node_a1.next = Some(Box::new(node_a2));
+
+        let mut node_b1 = ListNode::new(0);
+        let mut node_b2 = ListNode::new(2);
+        let mut node_b3 = ListNode::new(10);
+        let node_b4 = ListNode::new(30);
+        node_b3.next = Some(Box::new(node_b4));
+        node_b2.next = Some(Box::new(node_b3));
+        node_b1.next = Some(Box::new(node_b2));
+
+        let mut node_c1 = ListNode::new(3);
+        let mut node_c2 = ListNode::new(42);
+        let mut node_c3 = ListNode::new(105);
+        let mut node_c4 = ListNode::new(136);
+        let node_c5 = ListNode::new(1009);
+        node_c4.next = Some(Box::new(node_c5));
+        node_c3.next = Some(Box::new(node_c4));
+        node_c2.next = Some(Box::new(node_c3));
+        node_c1.next = Some(Box::new(node_c2));
+
+        let list = vec![
+            Some(Box::new(node_a1)),
+            Some(Box::new(node_b1)),
+            Some(Box::new(node_c1)),
+        ];
+
+        println!("{:?}", list.clone());
+
+        let head = Solution::merge_k_lists(list);
+        let actual_order = match head {
+            Some(h) => h.values(),
+            None => vec![],
+        };
+
+        let mut expected_order = vec![11, 20, 33, 0, 2, 10, 30, 3, 42, 105, 136, 1009];
+        expected_order.sort();
+
         assert_eq!(actual_order, expected_order);
     }
 }

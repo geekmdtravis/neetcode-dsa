@@ -19,18 +19,23 @@
 /// (double-ended queue) as long as you use only a queue's
 /// standard operations.
 ///
+#[allow(dead_code)]
 struct MyStack {
     stack: Vec<i32>,
 }
 
+#[allow(dead_code)]
 impl MyStack {
+    #[allow(dead_code)]
     fn new() -> Self {
         Self { stack: vec![] }
     }
 
+    #[allow(dead_code)]
     fn push(&mut self, x: i32) {
         self.stack.push(x);
     }
+    #[allow(dead_code)]
 
     fn pop(&mut self) -> i32 {
         let idx_top = self.stack.len() - 1;
@@ -38,11 +43,13 @@ impl MyStack {
         val
     }
 
+    #[allow(dead_code)]
     fn top(&self) -> i32 {
         let idx_top = self.stack.len() - 1;
         *self.stack.get(idx_top).unwrap()
     }
 
+    #[allow(dead_code)]
     fn empty(&self) -> bool {
         self.stack.is_empty()
     }

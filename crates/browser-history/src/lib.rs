@@ -5,11 +5,13 @@ use std::cmp::min;
 /// obj.visit(url);
 /// let ret_2: String = obj.back(steps);
 /// let ret_3: String = obj.forward(steps);
+#[allow(dead_code)]
 struct BrowserHistory {
     idx_current: usize,
     visit_history: Vec<String>,
 }
 
+#[allow(dead_code)]
 impl BrowserHistory {
     fn new(homepage: String) -> Self {
         let visit_history = vec![homepage];
@@ -20,17 +22,20 @@ impl BrowserHistory {
         }
     }
 
+    #[allow(dead_code)]
     fn visit(&mut self, url: String) {
         self.visit_history = self.visit_history[0..self.idx_current + 1].to_vec();
         self.visit_history.push(url);
         self.idx_current += 1;
     }
 
+    #[allow(dead_code)]
     fn back(&mut self, steps: i32) -> String {
         self.idx_current -= min(steps as usize, self.idx_current);
         self.visit_history.get(self.idx_current).unwrap().clone()
     }
 
+    #[allow(dead_code)]
     fn forward(&mut self, steps: i32) -> String {
         let max_fwd_steps = min(
             steps as usize,
@@ -47,7 +52,7 @@ mod tests {
 
     #[test]
     fn test_new_browser_history() {
-        let mut history = BrowserHistory::new("leetcode.com".to_string());
+        BrowserHistory::new("leetcode.com".to_string());
         // Test that we can create a new BrowserHistory
         // Implementation will be tested through other methods
     }

@@ -1,7 +1,9 @@
-e std::collections::VecDeque;
+use std::collections::VecDeque;
 
+#[allow(dead_code)]
 struct Solution;
 
+#[allow(dead_code)]
 impl Solution {
     /// The school cafeteria offers circular and square sandwiches at
     /// lunch break, referred to by numbers 0 and 1 respectively.
