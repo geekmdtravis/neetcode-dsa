@@ -1,5 +1,3 @@
-use std::cmp::Ordering;
-
 #[allow(dead_code)]
 struct Solution;
 
@@ -13,13 +11,10 @@ impl Solution {
             let mid = low + (high - low) / 2;
             let hours_needed: i32 = piles.iter().map(|pile| (pile + mid - 1) / mid).sum();
 
-            match hours_needed.cmp(&h) {
-                Ordering::Greater => {
-                    low = mid + 1;
-                }
-                _ => {
-                    high = mid;
-                }
+            if hours_needed > h {
+                low = mid + 1;
+            } else {
+                high = mid;
             }
         }
         low
