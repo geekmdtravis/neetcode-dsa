@@ -42,6 +42,13 @@ name = "implement-stack-using-queues"
 version = "0.1.0"
 
 [[package]]
+name = "koko-eating-bananas"
+version = "0.1.0"
+dependencies = [
+ "test-case",
+]
+
+[[package]]
 name = "merge-k-sorted-linked-lists"
 version = "0.1.0"
 dependencies = [
