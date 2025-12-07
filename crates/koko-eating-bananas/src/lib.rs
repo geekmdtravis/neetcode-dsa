@@ -5,6 +5,8 @@ struct Solution;
 
 #[allow(dead_code)]
 impl Solution {
+    // NOTE: using too much memory on large collections due to 
+    // the Vec. Need to convert to int pointers to L, R, and Mid. 
     #[allow(dead_code)]
     pub fn min_eating_speed(piles: Vec<i32>, h: i32) -> i32 {
         let &max = piles.iter().max().unwrap();
